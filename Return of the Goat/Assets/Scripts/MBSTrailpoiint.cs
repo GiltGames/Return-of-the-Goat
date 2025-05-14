@@ -32,7 +32,7 @@ public class MBSTrailpoiint : MonoBehaviour
           
             for ( int i =  intMaxPoints-2; i >=0; i-- )
             {
-                Debug.Log(i+" "+ trntrailpoints[i + 1].position +"" +trntrailpoints[i].position);
+             //   Debug.Log(i+" "+ trntrailpoints[i + 1].position +"" +trntrailpoints[i].position);
 
                 trntrailpoints[i+1].position = trntrailpoints[i].position;
 
