@@ -29,12 +29,15 @@ public class MBSTrailpoiint : MonoBehaviour
         {
 
             trnTrailEnd.position = trntrailpoints[intMaxPoints-1].position;
-            trntrailpoints[0].position = transform.position;
-            for ( int i =  intMaxPoints-2; i >1; i-- )
+          
+            for ( int i =  intMaxPoints-2; i >=0; i-- )
             {
+                Debug.Log(i+" "+ trntrailpoints[i + 1].position +"" +trntrailpoints[i].position);
+
                 trntrailpoints[i+1].position = trntrailpoints[i].position;
 
             }
+            trntrailpoints[0].position = transform.position;
             transform.position = trnAttachedGoat.position;
             
         }
