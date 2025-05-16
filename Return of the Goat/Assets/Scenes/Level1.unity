@@ -4202,6 +4202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcdbe9b929231d844adf1700db746923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trnLeaderTrail: {fileID: 888980803}
   trnFollowing: {fileID: 0}
   fltSpeed: 10
   fltPanicSpeed: 20
@@ -4209,6 +4210,9 @@ MonoBehaviour:
   fltRandomWanderRange: 10
   vecRandomWanderAim: {x: 0, y: 0, z: 0}
   fltStopDistance: 0.5
+  vecPanicAim: {x: 0, y: 0, z: 0}
+  fltPanicRange: 10
+  vecTrollAttack: {x: 0, y: 0, z: 0}
 --- !u!195 &1959321822
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4769,6 +4773,102 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.47, y: 3.17, z: 3.57}
   m_Center: {x: 0, y: 1.71, z: -0.05}
+--- !u!114 &2688782013277892292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2688782013277892289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6fbed807df62bc47a54d43909f57bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trnGoats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  fltSpeed: 5
+  fltActivateRange: 30
+  fltDistance: 0
+  fltStrikeRange: 3
+  agent: {fileID: 0}
+  isActive: 0
+  isDead: 0
+  intMaxGoats: 0
+  intTrollType: 0
+  intCurrentTarget: 0
+  fltAttackTime: 3
+--- !u!195 &2688782013277892294
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2688782013277892289}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!4 &7441257947585765948 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6441285648119955798, guid: ce5eafd5462a47d47a994417bc9ecf42, type: 3}
@@ -4836,6 +4936,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1560831429630212038, guid: 354f9e03957a5274489aff3de47110fc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2688782013277892290}
+    - targetCorrespondingSourceObject: {fileID: 1560831429630212038, guid: 354f9e03957a5274489aff3de47110fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2688782013277892292}
+    - targetCorrespondingSourceObject: {fileID: 1560831429630212038, guid: 354f9e03957a5274489aff3de47110fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2688782013277892294}
   m_SourcePrefab: {fileID: 100100000, guid: 354f9e03957a5274489aff3de47110fc, type: 3}
 --- !u!1 &8984341456838837059 stripped
 GameObject:
@@ -4854,6 +4960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcdbe9b929231d844adf1700db746923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trnLeaderTrail: {fileID: 888980803}
   trnFollowing: {fileID: 0}
   fltSpeed: 10
   fltPanicSpeed: 20
@@ -4861,6 +4968,9 @@ MonoBehaviour:
   fltRandomWanderRange: 10
   vecRandomWanderAim: {x: 0, y: 0, z: 0}
   fltStopDistance: 0.5
+  vecPanicAim: {x: 0, y: 0, z: 0}
+  fltPanicRange: 10
+  vecTrollAttack: {x: 0, y: 0, z: 0}
 --- !u!195 &8984341456838837061
 NavMeshAgent:
   m_ObjectHideFlags: 0

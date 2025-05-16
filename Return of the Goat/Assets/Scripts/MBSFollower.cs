@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class MBSFollower : MonoBehaviour
 {
-
+    [SerializeField] Transform trnLeaderTrail;
     public Transform trnFollowing;
        [SerializeField] float fltSpeed;
     [SerializeField] float fltPanicSpeed;
@@ -11,6 +11,9 @@ public class MBSFollower : MonoBehaviour
     [SerializeField] float fltRandomWanderRange;
     [SerializeField] Vector3 vecRandomWanderAim;
     [SerializeField] float fltStopDistance;
+    [SerializeField] Vector3 vecPanicAim;
+    [SerializeField] float fltPanicRange=10;
+    public Vector3 vecTrollAttack;
 
 
 
@@ -49,7 +52,19 @@ public class MBSFollower : MonoBehaviour
    public void FnFollow()
     {
         agent.destination= trnFollowing.position;
+        if (trnFollowing.GetComponent<MBSFollower>() != null)
+        {
+            if (trnFollowing.GetComponent <MBSFollower>().trnFollowing == null)
+            {
+                
+                FnPanic(trnFollowing.GetComponent<MBSFollower>().vecTrollAttack);
+                trnFollowing = null;
 
+            }
+
+
+
+        }
 
 
     }
@@ -71,6 +86,24 @@ public class MBSFollower : MonoBehaviour
 
     }
 
-    
+    public void FnPanic(Vector3 vecTroll)
+    {
+        if (trnFollowing != trnLeaderTrail)
+        {
+
+
+        }
+        
+        // come back to this - have to move TrnLastinLine down 1
+
+
+            trnFollowing = null;
+            vecTrollAttack = vecTroll;
+            agent.enabled = true;
+            vecPanicAim = (transform.position - vecTroll) * fltPanicRange;
+            agent.SetDestination(vecPanicAim);
+            agent.speed = fltPanicSpeed;
+        
+    }
 
 }
