@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class MBSLeaderHits : MonoBehaviour
 {
-    [SerializeField] Transform trnLastinLine;
+    public Transform trnLastinLine;
+    [SerializeField] MBSMoveContoller mbsMoveContoller;
     [SerializeField] TMP_Text txtSpeech;
     [SerializeField] float fltSpeechOffTime=1;
 
@@ -12,6 +13,7 @@ public class MBSLeaderHits : MonoBehaviour
     void Start()
     {
         txtSpeech.gameObject.SetActive(false);
+        mbsMoveContoller = GetComponent<MBSMoveContoller>();
     }
 
     // Update is called once per frame
@@ -26,7 +28,7 @@ public class MBSLeaderHits : MonoBehaviour
 
         if (collision != null)
         { 
-        
+        //Hits goat - adds to line
             if (collision.transform.GetComponent<MBSTrailerSetter>() != null)
             {
 
@@ -50,6 +52,21 @@ public class MBSLeaderHits : MonoBehaviour
             }
 
 
+            //hits troll
+
+            if (collision.transform.GetComponent<MBSTrollMobile>()  != null)
+            {
+                if (mbsMoveContoller.isCharging)
+                {
+
+
+                    collision.transform.GetComponent<MBSTrollMobile>().FnButted();
+                    txtSpeech.text = "Take That!";
+                    StartCoroutine(IESpeechOff());
+
+                }
+
+            }
 
         
         

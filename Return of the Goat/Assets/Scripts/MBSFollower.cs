@@ -4,7 +4,8 @@ using UnityEngine.AI;
 public class MBSFollower : MonoBehaviour
 {
     [SerializeField] Transform trnLeaderTrail;
-    public Transform trnFollowing;
+        public Transform trnFollowing;
+    [SerializeField] Transform trnGoatFollowed;
        [SerializeField] float fltSpeed;
     [SerializeField] float fltPanicSpeed;
     [SerializeField] NavMeshAgent agent;
@@ -14,6 +15,13 @@ public class MBSFollower : MonoBehaviour
     [SerializeField] Vector3 vecPanicAim;
     [SerializeField] float fltPanicRange=10;
     public Vector3 vecTrollAttack;
+    [SerializeField] Animator anim;
+
+    [SerializeField] Transform trnFinal;
+    [SerializeField] MBSScore mbsScore;
+    [SerializeField] MBSTimer mbsTimer;
+    [SerializeField] int intBaseScore = 500;
+    [SerializeField] float fltUnitScore;
 
 
 
@@ -23,7 +31,8 @@ public class MBSFollower : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         agent.speed = fltSpeed;
-
+        agent.enabled = true;
+       
         FnWander();
 
     }
@@ -31,6 +40,9 @@ public class MBSFollower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
+
         if (trnFollowing == null)
         {
             if ((agent.destination - transform.position).magnitude < fltStopDistance)
@@ -45,23 +57,35 @@ public class MBSFollower : MonoBehaviour
         {
             agent.destination = trnFollowing.position;
 
+            if ( trnGoatFollowed.GetComponent<MBSFollower>() != null)
+            {
+
+                if (trnGoatFollowed.GetComponent<MBSFollower>().trnFollowing == null)
+                {
+                    FnPanic(trnGoatFollowed.GetComponent<MBSFollower>().vecTrollAttack);
+                }
+            }
+
         }
 
     }
 
    public void FnFollow()
     {
+
+        //called from MBSLeaderHit
+
         agent.destination= trnFollowing.position;
-        if (trnFollowing.GetComponent<MBSFollower>() != null)
+
+        trnGoatFollowed = trnFollowing.GetComponent<MBSTrailEndPointMarker>().trnTrailStart.GetComponent<MBSTrailpoiint>().trnAttachedGoat;
+        
+        
+        if (trnFollowing == null)
         {
-            if (trnFollowing.GetComponent <MBSFollower>().trnFollowing == null)
-            {
+            
                 
-                FnPanic(trnFollowing.GetComponent<MBSFollower>().vecTrollAttack);
-                trnFollowing = null;
-
-            }
-
+                FnPanic(trnGoatFollowed.GetComponent<MBSFollower>().vecTrollAttack);
+               
 
 
         }
@@ -88,14 +112,8 @@ public class MBSFollower : MonoBehaviour
 
     public void FnPanic(Vector3 vecTroll)
     {
-        if (trnFollowing != trnLeaderTrail)
-        {
-
-
-        }
-        
-        // come back to this - have to move TrnLastinLine down 1
-
+       
+      
 
             trnFollowing = null;
             vecTrollAttack = vecTroll;
@@ -104,6 +122,24 @@ public class MBSFollower : MonoBehaviour
             agent.SetDestination(vecPanicAim);
             agent.speed = fltPanicSpeed;
         
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag=="Finish")
+        {
+           agent.SetDestination(trnFinal.position);
+            trnFollowing = null;
+
+            fltUnitScore = intBaseScore / mbsTimer.fltTimer;
+
+            mbsScore.FnUpdateScore(Mathf.FloorToInt(fltUnitScore));
+            mbsScore.FnUpdateGoatCount();
+            
+
+
+        }
     }
 
 }

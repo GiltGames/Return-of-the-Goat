@@ -3,12 +3,15 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using Unity.Hierarchy;
+using TMPro;
 
 public class MBSTrollMobile : MonoBehaviour
 {
     
     [SerializeField] Transform[] trnGoats = new Transform[50];
+    [SerializeField] MBSLeaderHits mbsLeader;
     [SerializeField] float fltSpeed;
+    [SerializeField] float fltSpeedRun;
     [SerializeField] float fltActivateRange;
     [SerializeField] float fltDistance;
     [SerializeField] float fltStrikeRange;
@@ -19,6 +22,14 @@ public class MBSTrollMobile : MonoBehaviour
     [SerializeField] int intTrollType;
     [SerializeField] int intCurrentTarget;
     [SerializeField] float fltAttackTime =3;
+    [SerializeField] TMP_Text txtSpeech;
+    [SerializeField] Transform trnTrollGrave;
+    [SerializeField] float fltGraveStopDist;
+    [SerializeField] MBSScore mbsScore;
+    [SerializeField] Animator anim;
+
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,7 +37,8 @@ public class MBSTrollMobile : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         isActive = false;
         isDead = false;
-        agent.enabled = false;
+        agent.enabled = true;
+        agent.SetDestination(transform.position);
 
         MBSFollower[] followers = FindObjectsByType<MBSFollower>(FindObjectsSortMode.None);
         int index = 0;
@@ -37,6 +49,12 @@ public class MBSTrollMobile : MonoBehaviour
             intMaxGoats = index;
            
         }
+        txtSpeech.text = "Hmmm";
+        mbsScore.intGoats = intMaxGoats;
+        mbsScore.txtGoatsLeft.text = "Goats left: " + intMaxGoats;
+
+        anim = GetComponent<Animator>();
+        anim.SetTrigger("Idle");
 
 
     }
@@ -96,16 +114,19 @@ public class MBSTrollMobile : MonoBehaviour
 
     void FnAdvance()
     {
-
+        fltDistance = fltActivateRange * 5;
         for (int i = 0; i < intMaxGoats; i++)
         {
-            fltDistance = fltActivateRange *5;
+          
+
+           
 
             if ((transform.position - trnGoats[i].position).magnitude < fltDistance)
             {
-
+             
                 fltDistance = (transform.position - trnGoats[i].position).magnitude;
                 intCurrentTarget = i;
+
             }
 
             FnSetTarget(intCurrentTarget);
@@ -125,16 +146,29 @@ public class MBSTrollMobile : MonoBehaviour
     {
         isDead = true;
         isActive = false;
+        agent.SetDestination(trnTrollGrave.position);
+        txtSpeech.text = "Ouch!";
+        anim.SetTrigger("run");
+        agent.speed = fltSpeedRun;
 
 
     }
 
     void FnClub(int intTarget)
     {
+        if (trnGoats[intTarget].GetComponent<MBSFollower>().trnFollowing != null)
+        {
 
+            mbsLeader.trnLastinLine = trnGoats[intTarget].GetComponent<MBSFollower>().trnFollowing;
+        }
         
         trnGoats[intTarget].GetComponent<MBSFollower>().FnPanic(transform.position);
+
+
         agent.speed = 0;
+
+        txtSpeech.text = "Clubbing";
+        anim.SetTrigger("attack1");
 
         StartCoroutine(IEDelay());
 
@@ -146,7 +180,8 @@ public class MBSTrollMobile : MonoBehaviour
         isActive = true;
         agent.enabled = true;
         agent.speed = fltSpeed;
-      
+        anim.SetTrigger("walk");
+
 
     }
 
@@ -154,12 +189,17 @@ public class MBSTrollMobile : MonoBehaviour
     {
         agent.SetDestination(trnGoats[IntTargetGoat].position);
         intCurrentTarget = IntTargetGoat;
-
+        txtSpeech.text = "Goat " + intCurrentTarget;
     }
 
     void FnRunAway()
     {
+        if ((trnTrollGrave.position - transform.position).magnitude < fltGraveStopDist)
+        {
+            agent.enabled = false;
+            gameObject.SetActive(false);
 
+        }
 
     }
 
@@ -169,6 +209,9 @@ public class MBSTrollMobile : MonoBehaviour
         yield return new WaitForSeconds(fltAttackTime);
 
         agent.speed = fltSpeed;
+
+        txtSpeech.text = "Hmm";
+        anim.SetTrigger("walk");
 
         yield return null;
     }
