@@ -16,12 +16,16 @@ public class MBSFollower : MonoBehaviour
     [SerializeField] float fltPanicRange=10;
     public Vector3 vecTrollAttack;
     [SerializeField] Animator anim;
+    [SerializeField] bool isWalking;
 
     [SerializeField] Transform trnFinal;
     [SerializeField] MBSScore mbsScore;
     [SerializeField] MBSTimer mbsTimer;
     [SerializeField] int intBaseScore = 500;
     [SerializeField] float fltUnitScore;
+
+    
+
 
 
 
@@ -33,6 +37,9 @@ public class MBSFollower : MonoBehaviour
         agent.speed = fltSpeed;
         agent.enabled = true;
        
+        anim = GetComponent<Animator>();
+
+
         FnWander();
 
     }
@@ -68,6 +75,22 @@ public class MBSFollower : MonoBehaviour
 
         }
 
+        if (agent.velocity.magnitude < .1f)
+        {
+            anim.SetTrigger("idle");
+            isWalking = false;
+
+        }
+        else
+        {
+            if (!isWalking)
+            {
+                isWalking = true;
+                anim.SetTrigger("walk");
+            }
+
+
+        }
     }
 
    public void FnFollow()
@@ -130,7 +153,7 @@ public class MBSFollower : MonoBehaviour
         if (other.tag=="Finish")
         {
            agent.SetDestination(trnFinal.position);
-            trnFollowing = null;
+            trnFollowing = trnFinal;
 
             fltUnitScore = intBaseScore / mbsTimer.fltTimer;
 
