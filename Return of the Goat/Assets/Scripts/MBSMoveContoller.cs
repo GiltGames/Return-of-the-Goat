@@ -28,7 +28,7 @@ public class MBSMoveContoller : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = trnGoat.GetComponent<Rigidbody>();
+      //  rb = trnGoat.GetComponent<Rigidbody>();
         chaCon = GetComponent<CharacterController>();
        
 
@@ -144,8 +144,8 @@ public class MBSMoveContoller : MonoBehaviour
         gmoAura.SetActive(false);
         isCharging = false;
         isChargingMode = false;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero ;
+       // rb.linearVelocity = Vector3.zero;
+      //  rb.angularVelocity = Vector3.zero ;
 
     }
 

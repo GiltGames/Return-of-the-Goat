@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using Unity.Hierarchy;
 using TMPro;
 
 public class MBSTrollMobile : MonoBehaviour
 {
-    
+        [SerializeField] int intTrollType;
+
     [SerializeField] Transform[] trnGoats = new Transform[50];
     [SerializeField] MBSLeaderHits mbsLeader;
     [SerializeField] float fltSpeed;
@@ -19,7 +19,6 @@ public class MBSTrollMobile : MonoBehaviour
     [SerializeField] bool isActive;
     [SerializeField] bool isDead;
     [SerializeField] int intMaxGoats;
-    [SerializeField] int intTrollType;
     [SerializeField] int intCurrentTarget;
     [SerializeField] float fltAttackTime =3;
     [SerializeField] TMP_Text txtSpeech;
@@ -39,6 +38,16 @@ public class MBSTrollMobile : MonoBehaviour
     [SerializeField] float fltEmergeHeightOffset;
     [SerializeField] BoxCollider boxCollider;
 
+    [Header("Thowing")]
+    [SerializeField] float fltThrowInterval;
+    [SerializeField] float fltThrowTimer;
+    [SerializeField] float fltThrowCastTime;
+    [SerializeField] GameObject gmoRockPrefab;
+    [SerializeField] GameObject gmoRock;
+    [SerializeField] Transform trnHand;
+    [SerializeField] Transform trnRockParent;
+   
+    
 
 
 
@@ -65,7 +74,7 @@ public class MBSTrollMobile : MonoBehaviour
         mbsScore.txtGoatsLeft.text = "Goats left: " + intMaxGoats;
 
         anim = GetComponent<Animator>();
-        anim.SetTrigger("Idle");
+        anim.SetTrigger("idle");
 
         boxCollider = GetComponent<BoxCollider>();
         
@@ -89,7 +98,10 @@ public class MBSTrollMobile : MonoBehaviour
 
                 break;
 
-
+            case 2:
+                agent.speed = 0;
+                anim.SetInteger("battle", 1);
+                break  ;
         }
 
         
@@ -118,7 +130,12 @@ public class MBSTrollMobile : MonoBehaviour
 
                 break;
 
+                case 2:
 
+                    FnThrow();
+                   
+
+                break;
 
             }
 
@@ -187,10 +204,11 @@ public class MBSTrollMobile : MonoBehaviour
 
             }
 
-            FnSetTarget(intCurrentTarget);
+          
 
 
         }
+        FnSetTarget(intCurrentTarget);
 
         if (fltDistance < fltStrikeRange)
         {
@@ -204,6 +222,7 @@ public class MBSTrollMobile : MonoBehaviour
     {
         isDead = true;
         isActive = false;
+        agent.enabled = true;
         agent.SetDestination(trnTrollGrave.position);
         txtSpeech.text = "Ouch!";
         anim.SetTrigger("run");
@@ -309,4 +328,72 @@ public class MBSTrollMobile : MonoBehaviour
 
     }
 
+    void FnThrow()
+    {
+        fltThrowTimer += Time.deltaTime;
+
+        if (fltThrowTimer > fltThrowInterval)
+        {
+            fltThrowTimer = 0;
+
+
+            fltDistance = fltActivateRange * 5;
+            for (int i = 0; i < intMaxGoats; i++)
+            {
+
+                if ((transform.position - trnGoats[i].position).magnitude < fltDistance)
+                {
+
+                    fltDistance = (transform.position - trnGoats[i].position).magnitude;
+                    intCurrentTarget = i;
+
+                }
+
+
+
+
+            }
+
+
+            FnThrowTarget(trnGoats[intCurrentTarget].position);
+        }
+    }
+
+        void FnThrowTarget(Vector3 vecTarget)
+        {
+        
+        
+       
+        StartCoroutine(IEReleaseRock(vecTarget));
+        agent.enabled = true;
+        agent.SetDestination(vecTarget);
+        agent.speed = fltSpeed;
+
+
+        }
+
+
+    IEnumerator IEReleaseRock(Vector3 vecTarget )
+    {
+
+        anim.SetInteger("moving", 3);
+
+
+        yield return new WaitForSeconds(fltThrowCastTime);
+        gmoRock = Instantiate(gmoRockPrefab, trnHand.position, Quaternion.identity);
+        gmoRock.GetComponent<Collider>().enabled = false;
+        gmoRock.transform.localScale *= 5f;
+      
+
+        gmoRock.transform.parent = trnRockParent;
+        gmoRock.GetComponent<MBSRock>().FnInitiate(vecTarget);
+
+        anim.SetInteger("moving",0);
+
+
+
+        yield return null;
+    }
+
+  
 }
