@@ -354,8 +354,10 @@ public class MBSTrollMobile : MonoBehaviour
 
             }
 
-
-            FnThrowTarget(trnGoats[intCurrentTarget].position);
+            if (fltDistance < fltActivateRange)
+            {
+                FnThrowTarget(trnGoats[intCurrentTarget].position);
+            }
         }
     }
 
