@@ -74,7 +74,9 @@ public class MBSTrollMobile : MonoBehaviour
         mbsScore.txtGoatsLeft.text = "Goats left: " + intMaxGoats;
 
         anim = GetComponent<Animator>();
-        anim.SetTrigger("idle");
+        // anim.SetTrigger("idle");
+
+        anim.SetInteger("battle", 1);
 
         boxCollider = GetComponent<BoxCollider>();
         
@@ -100,7 +102,7 @@ public class MBSTrollMobile : MonoBehaviour
 
             case 2:
                 agent.speed = 0;
-                anim.SetInteger("battle", 1);
+                
                 break  ;
         }
 
@@ -225,9 +227,27 @@ public class MBSTrollMobile : MonoBehaviour
         agent.enabled = true;
         agent.SetDestination(trnTrollGrave.position);
         txtSpeech.text = "Ouch!";
-        anim.SetTrigger("run");
+        //anim.SetTrigger("run");
+
+        anim.SetInteger("moving", 0);
+        StartCoroutine(IEButt());
+       
+
+
         agent.speed = fltSpeedRun;
 
+
+    }
+
+
+    IEnumerator IEButt()
+    {
+        yield return new WaitForEndOfFrame();
+        anim.SetInteger("battle", 1);
+
+        yield return new WaitForEndOfFrame();
+
+        anim.SetInteger("moving", 2);
 
     }
 
@@ -245,7 +265,10 @@ public class MBSTrollMobile : MonoBehaviour
         agent.speed = 0;
 
         txtSpeech.text = "Hold Still!";
-        anim.SetTrigger("attack1");
+        // anim.SetTrigger("attack1");
+
+        anim.SetInteger("moving", 0);
+        
 
         StartCoroutine(IEDelay());
 
@@ -261,9 +284,10 @@ public class MBSTrollMobile : MonoBehaviour
             agent.enabled = true;
             agent.speed = fltSpeed;
         txtSpeech.text = "Goats...";
-            anim.SetTrigger("walk");
-       
+        //  anim.SetTrigger("walk");
 
+        anim.SetInteger("battle", 0);
+        anim.SetInteger("moving", 1);
 
     }
 
@@ -288,14 +312,26 @@ public class MBSTrollMobile : MonoBehaviour
 
     IEnumerator IEDelay()
     {
+        yield return new WaitForEndOfFrame();
+        anim.SetInteger("battle", 1);
+
+        yield return new WaitForEndOfFrame();
+        anim.SetInteger("moving", 5);
+
         yield return new WaitForSeconds(fltAttackTime);
 
         agent.speed = fltSpeed;
 
         txtSpeech.text = "Goats...";
-        anim.SetTrigger("walk");
+        // anim.SetTrigger("walk");
+        anim.SetInteger("moving", 0);
+        yield return new WaitForEndOfFrame();
 
-        yield return null;
+        anim.SetInteger("battle", 0);
+        yield return new WaitForEndOfFrame();
+        anim.SetInteger("moving", 1);
+
+        yield return new WaitForEndOfFrame();
     }
 
 
@@ -375,7 +411,7 @@ public class MBSTrollMobile : MonoBehaviour
 
     IEnumerator IEReleaseRock(Vector3 vecTarget )
     {
-
+        anim.SetInteger("battle", 1);
         anim.SetInteger("moving", 3);
 
 
@@ -389,6 +425,7 @@ public class MBSTrollMobile : MonoBehaviour
         gmoRock.GetComponent<MBSRock>().FnInitiate(vecTarget);
 
         anim.SetInteger("moving",0);
+
 
 
 
