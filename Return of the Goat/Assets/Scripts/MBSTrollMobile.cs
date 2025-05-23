@@ -28,6 +28,17 @@ public class MBSTrollMobile : MonoBehaviour
     [SerializeField] MBSScore mbsScore;
     [SerializeField] Animator anim;
 
+    [Header ("Rising")]
+    [SerializeField] bool isUndeground;
+    [SerializeField] bool isRising;
+    [SerializeField] GameObject gmoEmergePrefab;
+    [SerializeField] GameObject gmoEmerge;
+    [SerializeField] float fltRiseTime;
+    [SerializeField] float fltRiseRate;
+    [SerializeField] Transform trnEmergeParent;
+    [SerializeField] float fltEmergeHeightOffset;
+    [SerializeField] BoxCollider boxCollider;
+
 
 
 
@@ -37,8 +48,8 @@ public class MBSTrollMobile : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         isActive = false;
         isDead = false;
-        agent.enabled = true;
-        agent.SetDestination(transform.position);
+        agent.enabled = false;
+        //agent.SetDestination(transform.position);
 
         MBSFollower[] followers = FindObjectsByType<MBSFollower>(FindObjectsSortMode.None);
         int index = 0;
@@ -55,6 +66,33 @@ public class MBSTrollMobile : MonoBehaviour
 
         anim = GetComponent<Animator>();
         anim.SetTrigger("Idle");
+
+        boxCollider = GetComponent<BoxCollider>();
+        
+        switch (intTrollType)
+        {
+            case 0:
+
+                agent.enabled = true;
+
+                break;
+
+
+                case 1:
+
+                isUndeground = true;
+
+                boxCollider.enabled = false;
+
+               
+
+
+                break;
+
+
+        }
+
+        
 
 
     }
@@ -75,7 +113,10 @@ public class MBSTrollMobile : MonoBehaviour
 
                 break;
 
+                case 1:
+                    FnAdvance();
 
+                break;
 
 
 
@@ -100,9 +141,21 @@ public class MBSTrollMobile : MonoBehaviour
 
                     if (fltDistance < fltActivateRange)
                     {
-                        FnActivate();
-                        FnSetTarget(i);
 
+                        if (!isUndeground)
+                        {
+                            FnActivate();
+                            FnSetTarget(i);
+                        }
+
+                        else
+                        {
+
+                            if (!isRising)
+                            {
+                                FnStartRise();
+                            }
+                        }
                     }
 
 
@@ -110,6 +163,11 @@ public class MBSTrollMobile : MonoBehaviour
             }
 
         }
+        if (isRising)
+        {
+            FnRising();
+        }
+
     }
 
     void FnAdvance()
@@ -167,7 +225,7 @@ public class MBSTrollMobile : MonoBehaviour
 
         agent.speed = 0;
 
-        txtSpeech.text = "Clubbing";
+        txtSpeech.text = "Hold Still!";
         anim.SetTrigger("attack1");
 
         StartCoroutine(IEDelay());
@@ -177,10 +235,15 @@ public class MBSTrollMobile : MonoBehaviour
     void FnActivate()
 
     {
-        isActive = true;
-        agent.enabled = true;
-        agent.speed = fltSpeed;
-        anim.SetTrigger("walk");
+
+       
+
+            isActive = true;
+            agent.enabled = true;
+            agent.speed = fltSpeed;
+        txtSpeech.text = "Goats...";
+            anim.SetTrigger("walk");
+       
 
 
     }
@@ -189,7 +252,7 @@ public class MBSTrollMobile : MonoBehaviour
     {
         agent.SetDestination(trnGoats[IntTargetGoat].position);
         intCurrentTarget = IntTargetGoat;
-        txtSpeech.text = "Goat " + intCurrentTarget;
+        //txtSpeech.text = "Goat " + intCurrentTarget;
     }
 
     void FnRunAway()
@@ -210,9 +273,40 @@ public class MBSTrollMobile : MonoBehaviour
 
         agent.speed = fltSpeed;
 
-        txtSpeech.text = "Hmm";
+        txtSpeech.text = "Goats...";
         anim.SetTrigger("walk");
 
         yield return null;
     }
+
+
+    void FnStartRise()
+    {
+        isRising = true;
+        gmoEmerge= Instantiate(gmoEmergePrefab, trnEmergeParent);
+        Vector3 vecEmergePoint = transform.position;
+        vecEmergePoint.y = fltEmergeHeightOffset;
+        gmoEmerge.transform.position = vecEmergePoint;
+        Destroy(gmoEmerge, fltRiseTime);
+
+
+
+    }
+
+    void FnRising()
+    {
+        transform.Translate(Vector3.up * Time.deltaTime * fltRiseRate);
+
+
+        if(transform.position.y > 0)
+        {
+            isRising = false;
+            boxCollider.enabled = true;
+            agent.enabled = true;
+            isUndeground = false;
+
+        }
+
+    }
+
 }

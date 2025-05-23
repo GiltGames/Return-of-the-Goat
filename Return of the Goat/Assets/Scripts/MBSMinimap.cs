@@ -13,6 +13,7 @@ public class MBSMinimap : MonoBehaviour
     [SerializeField] GameObject gmoMiniMapEntry;
     [SerializeField] Transform trnMinimap;
     [SerializeField] Transform trnReference;
+    [SerializeField] Transform trnRefPoint;
     [SerializeField] Vector3 vecOffset;
     [SerializeField] float fltAngle;
     [SerializeField] float fltDistance;
@@ -30,9 +31,9 @@ public class MBSMinimap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        vecOffset = trnReference.position - transform.position;
+        vecOffset = trnRefPoint.position - transform.position;
 
-        fltAngle = Vector3.Angle(trnReference.forward, vecOffset) + fltAngleOffset;
+        fltAngle = Vector3.SignedAngle(trnReference.forward, vecOffset, Vector3.down) + fltAngleOffset;
         fltDistance = vecOffset.magnitude + fltScale;
         
         if (fltDistance > fltRadiusMax)
@@ -46,4 +47,11 @@ public class MBSMinimap : MonoBehaviour
         gmoSheepPoint.GetComponent<RectTransform>().anchoredPosition = new Vector2(fltXpos, fltYpos);
 
     }
+
+    public void FnMapOff()
+    {
+        gmoSheepPoint.SetActive(false);
+
+    }
+
 }

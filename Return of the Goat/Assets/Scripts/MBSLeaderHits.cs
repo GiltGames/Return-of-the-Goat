@@ -22,54 +22,60 @@ public class MBSLeaderHits : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter(Collision collision)
+
+    private void OnControllerColliderHit(ControllerColliderHit collision)
     {
+        
+    
         Debug.Log("Leader hit "+collision.transform.name);
 
         if (collision != null)
-        { 
-        //Hits goat - adds to line
-            if (collision.transform.GetComponent<MBSTrailerSetter>() != null)
-            {
+        {
 
-                if (collision.transform.GetComponent<MBSFollower>().trnFollowing == null)
+           
+
+                //Hits goat - adds to line
+                if (collision.transform.GetComponent<MBSTrailerSetter>() != null)
                 {
 
-                    Debug.Log("Change Follower Trail");
+                    if (collision.transform.GetComponent<MBSFollower>().trnFollowing == null)
+                    {
 
-                    collision.transform.GetComponent<MBSFollower>().trnFollowing = trnLastinLine;
+                        Debug.Log("Change Follower Trail");
 
-                    collision.transform.GetComponent<MBSFollower>().FnFollow();
+                        collision.transform.GetComponent<MBSFollower>().trnFollowing = trnLastinLine;
 
-                    trnLastinLine = collision.transform.GetComponent<MBSTrailerSetter>().trnTrail;
+                        collision.transform.GetComponent<MBSFollower>().FnFollow();
 
-                    txtSpeech.text = "Follow me";
-                    txtSpeech.gameObject.SetActive(true);
-                    StartCoroutine(IESpeechOff());
+                        trnLastinLine = collision.transform.GetComponent<MBSTrailerSetter>().trnTrail;
+
+                        txtSpeech.text = "Follow me";
+                        txtSpeech.gameObject.SetActive(true);
+                        StartCoroutine(IESpeechOff());
+                    }
+
+
                 }
 
 
-            }
+                //hits troll
 
-
-            //hits troll
-
-            if (collision.transform.GetComponent<MBSTrollMobile>()  != null)
-            {
-                if (mbsMoveContoller.isCharging)
+                if (collision.transform.GetComponent<MBSTrollMobile>() != null)
                 {
+                    if (mbsMoveContoller.isCharging)
+                    {
 
 
-                    collision.transform.GetComponent<MBSTrollMobile>().FnButted();
-                    txtSpeech.text = "Take That!";
-                    StartCoroutine(IESpeechOff());
+                        collision.transform.GetComponent<MBSTrollMobile>().FnButted();
+                        txtSpeech.text = "Take That!";
+                        StartCoroutine(IESpeechOff());
+
+                    }
 
                 }
 
-            }
 
-        
-        
+            
         }
 
     }

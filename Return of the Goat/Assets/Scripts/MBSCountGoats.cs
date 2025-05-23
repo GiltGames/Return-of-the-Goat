@@ -11,13 +11,15 @@ public class MBSCountGoats : MonoBehaviour
     [SerializeField] float fltCountTimer;
   
     [SerializeField] TextMeshProUGUI txtGoatCount;
+    [SerializeField] MBSScore mbsScore;
+    [SerializeField] Transform trnFinal;
 
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        mbsScore = GetComponent<MBSScore>();
     }
 
     // Update is called once per frame
@@ -59,7 +61,11 @@ public class MBSCountGoats : MonoBehaviour
 
                 if (trnGoats[i].GetComponent <MBSFollower>().trnFollowing != null )
                 {
-                    intGoatsAttached++;
+                    if (trnGoats[i].GetComponent<MBSFollower>().trnFollowing != trnFinal)
+                    {
+
+                        intGoatsAttached++;
+                    }
                 }
 
 
@@ -74,7 +80,7 @@ public class MBSCountGoats : MonoBehaviour
 
     void FnDisplayCount()
     {
-        txtGoatCount.text = "Goats: " + intGoatsAttached + "/" + intMaxGoats;
+        txtGoatCount.text = "Goats following: " + intGoatsAttached + "/" + (intMaxGoats -  mbsScore.intGoatsSaved);
 
 
     }

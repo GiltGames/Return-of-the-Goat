@@ -24,6 +24,8 @@ public class MBSFollower : MonoBehaviour
     [SerializeField] int intBaseScore = 500;
     [SerializeField] float fltUnitScore;
 
+    [SerializeField] MBSMinimap mbsMinimap;
+
     
 
 
@@ -39,6 +41,8 @@ public class MBSFollower : MonoBehaviour
        
         anim = GetComponent<Animator>();
 
+
+        mbsMinimap = GetComponent<MBSMinimap>();
 
         FnWander();
 
@@ -122,6 +126,7 @@ public class MBSFollower : MonoBehaviour
        
         
         agent.enabled = true;
+        agent.speed = fltSpeed;
 
         vecRandomWanderAim = transform.position;
         vecRandomWanderAim.x += Random.Range(-fltRandomWanderRange, fltRandomWanderRange);
@@ -159,7 +164,7 @@ public class MBSFollower : MonoBehaviour
 
             mbsScore.FnUpdateScore(Mathf.FloorToInt(fltUnitScore));
             mbsScore.FnUpdateGoatCount();
-            
+            mbsMinimap.FnMapOff();
 
 
         }

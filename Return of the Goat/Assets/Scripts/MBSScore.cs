@@ -7,7 +7,7 @@ public class MBSScore : MonoBehaviour
     [SerializeField] TextMeshProUGUI txtScore;
     [SerializeField] TextMeshProUGUI txtGoatsSaved;
     public TextMeshProUGUI txtGoatsLeft;
-    [SerializeField] int intGoatsSaved;
+    public int intGoatsSaved;
     public int intGoats;
     [SerializeField] TextMeshProUGUI txtMessage;
     

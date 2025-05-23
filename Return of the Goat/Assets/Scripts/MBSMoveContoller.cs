@@ -15,7 +15,10 @@ public class MBSMoveContoller : MonoBehaviour
     [SerializeField] float fltChargeStartDelay =1f;
     [SerializeField] float fltChargeDuration =0.5f;
     [SerializeField] Rigidbody rb;
+    [SerializeField] CharacterController chaCon;
+
     public bool isCharging;
+    [SerializeField] bool isChargingMode;
     [SerializeField] ParticleSystem psCharge;
     [SerializeField] GameObject gmoAura;
 
@@ -26,6 +29,7 @@ public class MBSMoveContoller : MonoBehaviour
     void Start()
     {
         rb = trnGoat.GetComponent<Rigidbody>();
+        chaCon = GetComponent<CharacterController>();
        
 
     }
@@ -38,24 +42,38 @@ public class MBSMoveContoller : MonoBehaviour
 
         FnAnimate();
 
+        if (isCharging)
+        {
+            FnChargemove();
+        }
+
     }
 
 
     void FnInput()
     {
 
-        if (!isCharging)
+        if (!isChargingMode)
         {
 
             fltFwdInput = Input.GetAxis("Vertical");
             fltSideInput = Input.GetAxis("Horizontal");
             fltCharge = Input.GetAxis("Fire1");
         }
+        else
+        {
+            fltFwdInput = 0;
+            fltSideInput = 0;
+            fltCharge = 0;
 
+        }
 
         if (fltFwdInput >0)
         {
-            transform.Translate(Vector3.forward * fltFwdInput * fltImpulse *Time.deltaTime);
+
+            chaCon.Move(transform.forward * fltFwdInput * fltImpulse * Time.deltaTime);
+           // rb.linearVelocity = Vector3.forward * fltFwdInput * fltImpulse * Time.deltaTime;
+            //transform.Translate(Vector3.forward * fltFwdInput * fltImpulse *Time.deltaTime);
             
 
 
@@ -74,8 +92,8 @@ public class MBSMoveContoller : MonoBehaviour
 
         if (fltCharge >0)
         {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+           // rb.linearVelocity = Vector3.zero;
+          //  rb.angularVelocity = Vector3.zero;
        
             StartCoroutine(IECharge());
         }
@@ -109,23 +127,35 @@ public class MBSMoveContoller : MonoBehaviour
 
     IEnumerator IECharge()
     {
-        anim.SetTrigger("walk");
+       
         psCharge.gameObject.SetActive(true);
         psCharge.Play();
-        isCharging = true;
+        isChargingMode = true;
         yield return new WaitForSeconds(fltChargeStartDelay);
+        anim.SetTrigger("walk");
+        isCharging = true;
 
-        
-        rb.AddForce(trnGoat.forward *fltImpulseCharge, ForceMode.Impulse);
+        //rb.AddForce(trnGoat.forward *fltImpulseCharge, ForceMode.Impulse);
+
+
         psCharge.gameObject.SetActive(false);
         gmoAura.SetActive(true);
         yield return new WaitForSeconds(fltChargeDuration);
         gmoAura.SetActive(false);
         isCharging = false;
+        isChargingMode = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero ;
 
     }
 
+
+    void FnChargemove()
+    {
+        chaCon.Move(transform.forward *  fltImpulseCharge * Time.deltaTime);
+        //rb.linearVelocity = Vector3.forward * fltImpulseCharge * Time.deltaTime;
+        //transform.Translate(Vector3.forward  * fltImpulseCharge * Time.deltaTime);
+
+    }
 
 }
