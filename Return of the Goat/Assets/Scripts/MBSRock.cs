@@ -13,11 +13,12 @@ public class MBSRock : MonoBehaviour
     [SerializeField] bool isScattering;
     [SerializeField] GameObject gmoImpactPrefab;
     [SerializeField] GameObject gmoImpact;
+    [SerializeField] MBSLeaderHits mbsLeader;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        mbsLeader = FindFirstObjectByType<MBSLeaderHits>();
     }
 
     // Update is called once per frame
@@ -29,12 +30,17 @@ public class MBSRock : MonoBehaviour
 
         if (fltDistance < fltRockScatterTriggerDistance )
         {
-            FnScatterGoats();
+            if (!isScattering)
+            {
 
+                FnScatterGoats();
+            }
         }
 
         if (fltDistance < fltRockHitDistance)
         {
+
+
             FnCrash();
 
         }
@@ -51,7 +57,7 @@ public class MBSRock : MonoBehaviour
 
     void FnScatterGoats()
     {
-        isScattering = true;
+       
 
         MBSFollower[] followers = FindObjectsByType<MBSFollower>(FindObjectsSortMode.None);
         int index = 0;
@@ -59,9 +65,19 @@ public class MBSRock : MonoBehaviour
         {
             if ((follower.transform.position - transform.position).magnitude < fltRockScatterDistance)
             {
-                follower.FnPanic(follower.transform.position);
+                if (!isScattering)
+                {
+
+                    if (follower.GetComponent<MBSFollower>().trnFollowing != null)
+                    {
+
+                        mbsLeader.trnLastinLine = follower.GetComponent<MBSFollower>().trnFollowing;
+                    }
 
 
+                    follower.FnPanic(follower.transform.position);
+                    isScattering = true;
+                }
             }
 
             

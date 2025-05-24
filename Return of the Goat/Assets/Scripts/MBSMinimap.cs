@@ -9,7 +9,7 @@ public class MBSMinimap : MonoBehaviour
     [SerializeField] float fltRadiusMax;
     [SerializeField] float fltScale;
     [SerializeField] Image imgPoint;
-    [SerializeField] GameObject gmoSheepPoint;
+    public GameObject gmoSheepPoint;
     [SerializeField] GameObject gmoMiniMapEntry;
     [SerializeField] Transform trnMinimap;
     [SerializeField] Transform trnReference;
@@ -24,6 +24,12 @@ public class MBSMinimap : MonoBehaviour
     void Start()
     {
        gmoSheepPoint= Instantiate(gmoMiniMapEntry, trnMinimap);
+
+        if (GetComponent<MBSTrollMobile>() != null)
+        {
+            gmoSheepPoint.GetComponent<Image>().enabled = false;
+        }
+
         gmoSheepPoint.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
     }

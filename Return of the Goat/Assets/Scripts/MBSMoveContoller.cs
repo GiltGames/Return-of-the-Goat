@@ -16,6 +16,9 @@ public class MBSMoveContoller : MonoBehaviour
     [SerializeField] float fltChargeDuration =0.5f;
     [SerializeField] Rigidbody rb;
     [SerializeField] CharacterController chaCon;
+    [SerializeField] float fltGravity = 3f;
+    [SerializeField] MBSPause mbsPause;
+
 
     public bool isCharging;
     [SerializeField] bool isChargingMode;
@@ -30,23 +33,26 @@ public class MBSMoveContoller : MonoBehaviour
     {
       //  rb = trnGoat.GetComponent<Rigidbody>();
         chaCon = GetComponent<CharacterController>();
-       
+       mbsPause = FindFirstObjectByType<MBSPause>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!mbsPause.isPaused)
+       {
+            FnGravity();
 
-        FnInput();
+            FnInput();
 
-        FnAnimate();
+            FnAnimate();
 
-        if (isCharging)
-        {
-            FnChargemove();
+            if (isCharging)
+            {
+                FnChargemove();
+            }
         }
-
     }
 
 
@@ -155,6 +161,12 @@ public class MBSMoveContoller : MonoBehaviour
         chaCon.Move(transform.forward *  fltImpulseCharge * Time.deltaTime);
         //rb.linearVelocity = Vector3.forward * fltImpulseCharge * Time.deltaTime;
         //transform.Translate(Vector3.forward  * fltImpulseCharge * Time.deltaTime);
+
+    }
+
+    void FnGravity()
+    {
+        chaCon.Move(Vector3.down * Time.deltaTime * fltGravity);
 
     }
 

@@ -25,6 +25,7 @@ public class MBSFollower : MonoBehaviour
     [SerializeField] float fltUnitScore;
 
     [SerializeField] MBSMinimap mbsMinimap;
+    [SerializeField] bool isHome;
 
     
 
@@ -95,6 +96,12 @@ public class MBSFollower : MonoBehaviour
 
 
         }
+
+        if (isHome)
+        {
+            transform.Translate(Vector3.forward *fltSpeed *Time.deltaTime);
+        }
+
     }
 
    public void FnFollow()
@@ -157,16 +164,28 @@ public class MBSFollower : MonoBehaviour
     {
         if (other.tag=="Finish")
         {
-           agent.SetDestination(trnFinal.position);
-            trnFollowing = trnFinal;
-
-            fltUnitScore = intBaseScore / mbsTimer.fltTimer;
-
-            mbsScore.FnUpdateScore(Mathf.FloorToInt(fltUnitScore));
-            mbsScore.FnUpdateGoatCount();
-            mbsMinimap.FnMapOff();
+            if (!isHome)
+            {
 
 
+                agent.SetDestination(trnFinal.position);
+                trnFollowing = trnFinal;
+
+                fltUnitScore = intBaseScore / mbsTimer.fltTimer;
+
+                mbsScore.FnUpdateScore(Mathf.FloorToInt(fltUnitScore));
+                mbsScore.FnUpdateGoatCount();
+                mbsMinimap.FnMapOff();
+                isHome = true;
+                transform.Translate(Vector3.forward*.2f);
+                Rigidbody rb= GetComponent<Rigidbody>();
+                Destroy(rb);
+
+                Transform trnLeader = FindFirstObjectByType<MBSLeaderHits>().transform;
+                trnLeader.GetComponent<MBSLeaderHits>().trnLastinLine = trnLeaderTrail;
+
+
+            }
         }
     }
 

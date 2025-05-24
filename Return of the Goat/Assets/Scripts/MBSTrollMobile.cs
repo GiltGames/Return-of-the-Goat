@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 public class MBSTrollMobile : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class MBSTrollMobile : MonoBehaviour
     [SerializeField] float fltGraveStopDist;
     [SerializeField] MBSScore mbsScore;
     [SerializeField] Animator anim;
+    [SerializeField] MBSMinimap mbsMinimap;
+    [SerializeField] float fltSpeechOffTime;
 
     [Header ("Rising")]
     [SerializeField] bool isUndeground;
@@ -69,7 +72,7 @@ public class MBSTrollMobile : MonoBehaviour
             intMaxGoats = index;
            
         }
-        txtSpeech.text = "Hmmm";
+        txtSpeech.text = "";
         mbsScore.intGoats = intMaxGoats;
         mbsScore.txtGoatsLeft.text = "Goats left: " + intMaxGoats;
 
@@ -79,6 +82,11 @@ public class MBSTrollMobile : MonoBehaviour
         anim.SetInteger("battle", 1);
 
         boxCollider = GetComponent<BoxCollider>();
+
+        mbsMinimap = GetComponent<MBSMinimap>();
+      //  mbsMinimap.gmoSheepPoint.SetActive(false);
+      //  mbsMinimap.enabled = false;
+
         
         switch (intTrollType)
         {
@@ -226,7 +234,9 @@ public class MBSTrollMobile : MonoBehaviour
         isActive = false;
         agent.enabled = true;
         agent.SetDestination(trnTrollGrave.position);
+        txtSpeech.gameObject.SetActive(true);
         txtSpeech.text = "Ouch!";
+        StartCoroutine(IESpeechOff());
         //anim.SetTrigger("run");
 
         anim.SetInteger("moving", 0);
@@ -235,6 +245,7 @@ public class MBSTrollMobile : MonoBehaviour
 
 
         agent.speed = fltSpeedRun;
+        mbsMinimap.gmoSheepPoint.GetComponent<Image>().enabled = false;
 
 
     }
@@ -284,10 +295,15 @@ public class MBSTrollMobile : MonoBehaviour
             agent.enabled = true;
             agent.speed = fltSpeed;
         txtSpeech.text = "Goats...";
+        StartCoroutine(IESpeechOff());
         //  anim.SetTrigger("walk");
 
         anim.SetInteger("battle", 0);
         anim.SetInteger("moving", 1);
+       
+        mbsMinimap.gmoSheepPoint.GetComponent<Image>().enabled = true;
+        mbsMinimap.enabled = true;
+
 
     }
 
@@ -342,6 +358,7 @@ public class MBSTrollMobile : MonoBehaviour
         Vector3 vecEmergePoint = transform.position;
         vecEmergePoint.y = fltEmergeHeightOffset;
         gmoEmerge.transform.position = vecEmergePoint;
+        
         Destroy(gmoEmerge, fltRiseTime);
 
 
@@ -432,5 +449,14 @@ public class MBSTrollMobile : MonoBehaviour
         yield return null;
     }
 
-  
+    IEnumerator IESpeechOff()
+    {
+        yield return new WaitForSeconds(fltSpeechOffTime);
+        txtSpeech.text = null;
+        txtSpeech.gameObject.SetActive(false);
+
+
+        yield return null;
+    }
+
 }

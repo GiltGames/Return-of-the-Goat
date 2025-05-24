@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: SOScore
   m_EditorClassIdentifier: 
   intScore: 0
+  fltSFXVol: 0.8
+  fltMusicVol: 0.8
